@@ -15,9 +15,9 @@ Portal interno para reunir os painéis de operação com identidade visual consi
 ## Preparação do Supabase
 
 1. Acesse o projeto Supabase configurado em `assets/supabase-config.js` e confira se ele continua ativo.
-2. Execute `supabase/schema.sql` no SQL Editor.
+2. Abra o SQL Editor desse projeto, cole todo o conteúdo da versão atual de `supabase/schema.sql` e execute. O script pode ser executado novamente para aplicar permissões atualizadas. Se o erro de schema cache continuar, rode `NOTIFY pgrst, 'reload schema';` no SQL Editor e aguarde alguns segundos.
 3. Mantenha o cadastro público desativado e crie as contas operacionais pelo Supabase Auth.
-4. Promova um usuário a administrador com `update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'email@empresa.com.br');`.
+4. Substitua `SEU_EMAIL_AQUI` pelo e-mail do administrador em `supabase/promover-admin.sql` e execute o script no SQL Editor.
 5. Importe as bases de Conciliação e Shelf-Life com uma conta administradora. As cargas são mantidas privadas pelo Supabase e só aparecem depois de concluídas. As conferências e justificativas de Conciliação são compartilhadas entre os usuários autenticados.
 
 A chave anon/publishable é pública por definição e já está no portal original. Nunca use a chave `service_role` no navegador ou no repositório.
@@ -25,5 +25,8 @@ A chave anon/publishable é pública por definição e já está no portal origi
 ## Publicação
 
 Publique a pasta inteira `publicacao-netlify`, incluindo `assets/` e `supabase/`. A primeira visita exige internet para carregar Supabase Auth e a biblioteca de leitura de Excel.
+
+
+
 
 
