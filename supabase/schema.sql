@@ -187,4 +187,8 @@ grant select, insert, update, delete on public.profiles to authenticated;
 grant select, insert, update, delete on public.shelf_life_items to authenticated;
 grant select, insert, update, delete on public.shelf_life_imports to authenticated;
 grant select, insert, update, delete on public.reconciliation_items to authenticated;
+-- Operadores só alteram campos da contagem; dados-base importados ficam protegidos.
+revoke update on public.reconciliation_items from authenticated;
+grant update (physical_quantity, has_physical, justification, status, updated_at)
+  on public.reconciliation_items to authenticated;
 grant select, insert, update, delete on public.reconciliation_imports to authenticated;
