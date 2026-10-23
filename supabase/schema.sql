@@ -192,3 +192,65 @@ revoke update on public.reconciliation_items from authenticated;
 grant update (physical_quantity, has_physical, justification, status, updated_at)
   on public.reconciliation_items to authenticated;
 grant select, insert, update, delete on public.reconciliation_imports to authenticated;
+
+-- KPIs de Estoque: uma carga versionada e publicada somente após o envio completo.
+create table if not exists public.stock_kpi_imports (
+  id uuid primary key default gen_random_uuid(),
+  source_file text not null,
+  status text not null default 'importing' check (status in ('importing', 'ready')),
+  uploaded_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.stock_kpi_items (
+  id uuid primary key default gen_random_uuid(),
+  import_id uuid not null references public.stock_kpi_imports(id) on delete cascade,
+  product_id text not null,
+  product text not null,
+  manufacturer text,
+  segment text,
+  subgroup text,
+  turnover text,
+  pull_status text,
+  purchase_quantity numeric(14,3) not null default 0,
+  observation text,
+  stock_total numeric(14,3) not null default 0,
+  sold_30d numeric(14,3) not null default 0,
+  stored_value numeric(16,4) not null default 0,
+  warehouse_stock jsonb not null default '{}'::jsonb,
+  warehouse_value jsonb not null default '{}'::jsonb,
+  warehouse_sales jsonb not null default '{}'::jsonb,
+  coverage_days numeric(14,3) not null default 0,
+  uploaded_by uuid references auth.users(id) on delete set null,
+  created_at timestamptz not null default now()
+);
+
+alter table public.stock_kpi_items add column if not exists subgroup text;
+
+create index if not exists stock_kpi_items_import_idx on public.stock_kpi_items (import_id);
+create index if not exists stock_kpi_items_product_idx on public.stock_kpi_items (product_id);
+alter table public.stock_kpi_imports enable row level security;
+alter table public.stock_kpi_items enable row level security;
+
+drop policy if exists "authenticated read completed stock kpi imports" on public.stock_kpi_imports;
+create policy "authenticated read completed stock kpi imports" on public.stock_kpi_imports
+for select to authenticated using (status = 'ready');
+
+drop policy if exists "admin manages stock kpi imports" on public.stock_kpi_imports;
+create policy "admin manages stock kpi imports" on public.stock_kpi_imports
+for all to authenticated using (public.current_a2m_role() = 'admin')
+with check (public.current_a2m_role() = 'admin');
+
+drop policy if exists "authenticated read completed stock kpi items" on public.stock_kpi_items;
+create policy "authenticated read completed stock kpi items" on public.stock_kpi_items
+for select to authenticated using (
+  exists (select 1 from public.stock_kpi_imports i where i.id = import_id and i.status = 'ready')
+);
+
+drop policy if exists "admin manages stock kpi items" on public.stock_kpi_items;
+create policy "admin manages stock kpi items" on public.stock_kpi_items
+for all to authenticated using (public.current_a2m_role() = 'admin')
+with check (public.current_a2m_role() = 'admin');
+
+grant select, insert, update, delete on public.stock_kpi_imports to authenticated;
+grant select, insert, update, delete on public.stock_kpi_items to authenticated;
