@@ -12,11 +12,12 @@ Portal interno para reunir os painéis de operação com identidade visual consi
 - `assets/sistema.css`: identidade visual compartilhada.
 - `assets/supabase-config.js`: URL e chave pública do projeto Supabase.
 - `supabase/schema.sql`: tabelas e políticas de acesso iniciais.
+- `supabase/otimizacao-kpis-estoque.sql`: atualização incremental para otimizar as cargas do painel de KPIs.
 
 ## Preparação do Supabase
 
 1. Acesse o projeto Supabase configurado em `assets/supabase-config.js` e confira se ele continua ativo.
-2. Abra o SQL Editor desse projeto, cole todo o conteúdo da versão atual de `supabase/schema.sql` e execute. O script pode ser executado novamente para aplicar permissões atualizadas. Se o erro de schema cache continuar, rode `NOTIFY pgrst, 'reload schema';` no SQL Editor e aguarde alguns segundos.
+2. Para otimizar uma instalação existente, abra o SQL Editor do Supabase e execute `supabase/otimizacao-kpis-estoque.sql`. Em uma instalação nova, aplique `supabase/schema.sql`, que já inclui as mesmas otimizações. A atualização é repetível. Se o erro de schema cache continuar, rode `NOTIFY pgrst, 'reload schema';` no SQL Editor e aguarde alguns segundos.
 3. Mantenha o cadastro público desativado e crie as contas operacionais pelo Supabase Auth.
 4. Substitua `SEU_EMAIL_AQUI` pelo e-mail do administrador em `supabase/promover-admin.sql` e execute o script no SQL Editor.
 5. Com o schema aplicado e a conta com perfil `admin`, abra KPIs de Estoque e selecione a planilha KPI Giro de Estoque atualizada (abas `Estoque Geral` e `Valor Armazenado`). A nova versão fica disponível após o envio completo.

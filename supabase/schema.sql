@@ -228,7 +228,6 @@ create table if not exists public.stock_kpi_items (
 alter table public.stock_kpi_items add column if not exists subgroup text;
 
 create index if not exists stock_kpi_items_import_idx on public.stock_kpi_items (import_id);
-create index if not exists stock_kpi_items_product_idx on public.stock_kpi_items (product_id);
 alter table public.stock_kpi_imports enable row level security;
 alter table public.stock_kpi_items enable row level security;
 
@@ -254,3 +253,40 @@ with check (public.current_a2m_role() = 'admin');
 
 grant select, insert, update, delete on public.stock_kpi_imports to authenticated;
 grant select, insert, update, delete on public.stock_kpi_items to authenticated;
+
+-- Índice usado ao localizar a versão publicada mais recente.
+create index if not exists stock_kpi_imports_ready_idx
+  on public.stock_kpi_imports (created_at desc, id desc)
+  where status = 'ready';
+
+-- A aplicação consulta os itens somente por import_id; este índice não é usado.
+drop index if exists public.stock_kpi_items_product_idx;
+
+-- Após uma carga ficar pronta, remove versões publicadas anteriores.
+-- O ON DELETE CASCADE também elimina seus itens associados.
+create or replace function public.keep_latest_stock_kpi_import()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  delete from public.stock_kpi_imports i
+  where i.status = 'ready'
+    and i.id <> (
+      select newest.id
+      from public.stock_kpi_imports newest
+      where newest.status = 'ready'
+      order by newest.created_at desc, newest.id desc
+      limit 1
+    );
+  return new;
+end;
+$$;
+
+drop trigger if exists keep_latest_stock_kpi_import on public.stock_kpi_imports;
+create trigger keep_latest_stock_kpi_import
+after update of status on public.stock_kpi_imports
+for each row
+when (old.status is distinct from new.status and new.status = 'ready')
+execute function public.keep_latest_stock_kpi_import();
