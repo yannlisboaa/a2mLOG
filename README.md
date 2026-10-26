@@ -10,7 +10,7 @@ Portal interno para reunir os painéis de operação com identidade visual consi
 - `kpis-estoque.html`: KPIs de estoque por produto, fabricante, giro, segmento e armazém.
 - `shelf-life.html`: acompanhamento de vencimentos e relatório de conferência por período.
 - `assets/sistema.css`: identidade visual compartilhada.
-- `assets/PADRONAGEM - BRANCA.png`: padronagem A2M sutil aplicada somente ao cabeçalho.
+- `assets/PADRONAGEM - BRANCA.png`: padronagem A2M usada no cabeçalho, no login e nos cards de acesso da página inicial.
 - `assets/supabase-config.js`: URL e chave pública do projeto Supabase.
 - `supabase/schema.sql`: tabelas e políticas de acesso iniciais.
 - `supabase/otimizacao-kpis-estoque.sql`: atualização incremental para otimizar as cargas do painel de KPIs.
