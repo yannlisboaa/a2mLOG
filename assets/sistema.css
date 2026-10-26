@@ -20,14 +20,10 @@ body:has(.wrap)>header.system-bar{justify-content:space-between}.wrap{max-width:
 .system-nav a,.system-nav button,.btn,.button{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease}
 .system-nav a:focus-visible,.system-nav button:focus-visible,button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #0500ff;outline-offset:2px}
 .system-nav button:hover,.btn:not(:disabled):hover,.button:not(:disabled):hover{filter:brightness(1.04);transform:translateY(-1px);box-shadow:0 4px 12px #10278320}
-.module,.card,.metric{position:relative;isolation:isolate;overflow:hidden}
-.module::before,.card::before,.metric::before{position:absolute;z-index:0;top:0;right:0;width:164px;height:126px;content:"";background:url("./a2m-pattern-card.png") right top/contain no-repeat;opacity:.9;pointer-events:none}
-.metric::before{width:112px;height:88px}
-.module>*,.card>*,.metric>*{position:relative;z-index:1}
-@media(max-width:760px){.system-bar{height:auto;min-height:76px;max-height:none;padding:13px 18px;gap:8px;flex-wrap:wrap}.system-nav{width:100%;justify-content:flex-start;margin:3px 0 0;gap:3px}.system-nav a{padding:8px 9px;font-size:12px}.page-head h1,.hero h1,.page-title,.app .top,.headtitle{font-size:23px!important}.app .top{height:54px!important;min-height:54px}.module::before,.card::before{width:132px;height:102px}.metric::before{width:96px;height:76px}}
+@media(max-width:760px){.system-bar{height:auto;min-height:76px;max-height:none;padding:13px 18px;gap:8px;flex-wrap:wrap}.system-nav{width:100%;justify-content:flex-start;margin:3px 0 0;gap:3px}.system-nav a{padding:8px 9px;font-size:12px}.page-head h1,.hero h1,.page-title,.app .top,.headtitle{font-size:23px!important}.app .top{height:54px!important;min-height:54px}}
 @media(prefers-reduced-motion:reduce){.system-nav a,.system-nav button,.btn,.button{transition:none!important;transform:none!important}}
 
-/* Login: padronagem sutil no cartão, no mesmo estilo dos módulos. */
-body[data-page="login"] .login-card{position:relative;isolation:isolate;overflow:hidden}
-body[data-page="login"] .login-card::after{position:absolute;z-index:0;top:0;right:0;width:150px;height:118px;content:"";background:url("./a2m-pattern-card.png") right top/contain no-repeat;opacity:.78;pointer-events:none}
-body[data-page="login"] .login-card>*{position:relative;z-index:1}
+/* Padronagem A2M aplicada somente no cabeçalho. */
+.system-bar{isolation:isolate;overflow:hidden}
+.system-bar::after{position:absolute;z-index:0;top:0;right:0;width:280px;height:100%;content:"";background:url("./PADRONAGEM - BRANCA.png") right center/auto 230px no-repeat;opacity:.38;pointer-events:none}
+.system-bar>*{position:relative;z-index:1}
