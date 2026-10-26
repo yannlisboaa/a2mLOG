@@ -80,8 +80,9 @@ create table if not exists public.reconciliation_items (
   item_id text,
   product text not null,
   system_quantity numeric(14,3) not null default 0,
+  reconciliation_quantity numeric(14,3),
   physical_quantity numeric(14,3) not null default 0,
-  difference_quantity numeric(14,3) generated always as (physical_quantity - system_quantity) stored,
+  difference_quantity numeric(14,3) generated always as (physical_quantity - coalesce(reconciliation_quantity, system_quantity)) stored,
   unit_cost numeric(14,4) not null default 0,
   justification text,
   status text not null default 'pendente' check (status in ('pendente', 'conferido', 'aprovado')),
@@ -102,11 +103,43 @@ alter table public.reconciliation_items
   add column if not exists import_id uuid references public.reconciliation_imports(id) on delete cascade,
   add column if not exists segment text,
   add column if not exists curve text,
-  add column if not exists has_physical boolean not null default false;
+  add column if not exists has_physical boolean not null default false,
+  add column if not exists reconciliation_quantity numeric(14,3);
+-- Keep the reconciliation-balance formula current without rebuilding the column on every schema run.
+do $migration$
+declare
+  v_expression text;
+  v_generated "char";
+begin
+  select a.attgenerated, pg_get_expr(d.adbin, d.adrelid)
+    into v_generated, v_expression
+  from pg_attribute a
+  left join pg_attrdef d on d.adrelid = a.attrelid and d.adnum = a.attnum
+  where a.attrelid = 'public.reconciliation_items'::regclass
+    and a.attname = 'difference_quantity'
+    and a.attnum > 0
+    and not a.attisdropped;
+
+  if not found then
+    alter table public.reconciliation_items
+      add column difference_quantity numeric(14,3)
+      generated always as (physical_quantity - coalesce(reconciliation_quantity, system_quantity)) stored;
+  elsif v_generated is distinct from 's'
+     or coalesce(position('reconciliation_quantity' in v_expression), 0) = 0 then
+    alter table public.reconciliation_items drop column difference_quantity;
+    alter table public.reconciliation_items
+      add column difference_quantity numeric(14,3)
+      generated always as (physical_quantity - coalesce(reconciliation_quantity, system_quantity)) stored;
+  end if;
+end $migration$;
 alter table public.reconciliation_items drop constraint if exists reconciliation_items_status_check;
 
 create index if not exists reconciliation_date_idx on public.reconciliation_items (reconciliation_date);
 create index if not exists reconciliation_warehouse_idx on public.reconciliation_items (warehouse);
+create index if not exists reconciliation_imports_status_created_idx
+  on public.reconciliation_imports (status, created_at desc);
+create index if not exists reconciliation_items_import_id_idx
+  on public.reconciliation_items (import_id);
 
 alter table public.profiles enable row level security;
 alter table public.shelf_life_items enable row level security;

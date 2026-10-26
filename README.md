@@ -10,6 +10,7 @@ Portal interno para reunir os painéis de operação com identidade visual consi
 - `kpis-estoque.html`: KPIs de estoque por produto, fabricante, giro, segmento e armazém.
 - `shelf-life.html`: acompanhamento de vencimentos e relatório de conferência por período.
 - `assets/sistema.css`: identidade visual compartilhada.
+- `assets/a2m-pattern-card.png`: padronagem A2M aplicada aos cartões do portal e dos KPIs.
 - `assets/supabase-config.js`: URL e chave pública do projeto Supabase.
 - `supabase/schema.sql`: tabelas e políticas de acesso iniciais.
 - `supabase/otimizacao-kpis-estoque.sql`: atualização incremental para otimizar as cargas do painel de KPIs.
@@ -34,7 +35,11 @@ A chave anon/publishable é pública por definição e já está no portal origi
 
 ## Publicação
 
-Publique a pasta inteira `publicacao-netlify`, incluindo `assets/` e `supabase/`. A primeira visita exige internet para carregar Supabase Auth e a biblioteca de leitura de Excel.
+Publique a raiz deste repositório no GitHub Pages ou use a raiz como diretório de publicação no Netlify. Mantenha juntos `index.html`, os módulos, `assets/` e `supabase/`. A primeira visita exige internet para carregar Supabase Auth e a biblioteca de leitura de Excel.
+
+## Fluxo de atualização
+
+As mudanças são preparadas e revisadas na cópia local primeiro. A versão pública do GitHub permanece ativa durante essa revisão; o envio para `main` acontece depois da aprovação da versão final.
 
 
 
