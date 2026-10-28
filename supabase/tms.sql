@@ -26,6 +26,7 @@ create table if not exists public.tms_orders (
   route_name text,
   route_seconds integer,
   service_seconds integer,
+  courier_rating numeric(5,2),
   uploaded_by uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now()
 );
