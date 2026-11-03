@@ -5,54 +5,75 @@
 <title>Conciliação de Estoque | a2mLOG</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--blue:#17269f;--navy:#101c8e;--ink:#263142;--muted:#758091;--line:#e5e8ef;--bg:#f1f2f4;--white:#fff;--red:#c94c58;--green:#24845a}*{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px Arial,sans-serif;color:var(--ink)}.app{min-height:100vh;display:grid;grid-template-columns:210px 1fr}.side{background:var(--navy);color:#fff;padding:24px 16px}.brand{font-size:18px;font-weight:800;margin:0 0 40px}.brand small{display:block;font-size:10px;letter-spacing:1.5px;margin-top:5px}.side h3{font-size:17px;margin:0 0 14px}.side label{display:block;margin:0 0 16px;font-weight:700;font-size:13px}.side select{display:block;width:100%;height:36px;margin-top:7px;padding:0 9px;border:1px solid #ccd3fa;border-radius:3px;background:white;color:#263142;font:13px Arial,sans-serif}.reset-filter{width:100%;padding:9px;border:1px solid #cbd1e4;border-radius:4px;background:transparent;color:white;font-weight:bold;cursor:pointer}.side p{font-size:11px;line-height:1.5;color:#d8dcff;margin-top:24px}.main{min-width:0;padding:0 22px 24px}.top{height:56px;background:var(--navy);color:white;margin:0 -22px 18px;padding:14px 24px;text-align:right;font-weight:bold;font-size:21px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.button{border:0;background:var(--blue);color:white;border-radius:4px;padding:10px 14px;cursor:pointer;font-weight:bold}.button.secondary{background:#fff;color:var(--blue);border:1px solid #cbd1e4}.button:disabled{opacity:.45;cursor:not-allowed}.file{display:none}.notice{font-size:12px;color:var(--muted);margin:5px 0}.drop{background:white;border:1px dashed #aab4d1;border-radius:7px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.metrics{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:9px;margin:14px 0}.metric{background:#fff;padding:13px 15px;min-height:80px;box-shadow:0 2px 7px #0000000c}.metric strong{display:block;font-size:22px;color:var(--blue);margin-bottom:5px}.metric small{font-weight:bold;color:#656b74}.filters{display:flex;gap:9px;align-items:center;flex-wrap:wrap;background:#fff;padding:10px;margin-bottom:8px}.filters input{min-width:240px;padding:8px;border:1px solid var(--line);border-radius:3px;background:#fff}.table-wrap{background:white;overflow:auto;max-height:47vh;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;font-size:12px}thead{position:sticky;top:0;background:var(--blue);color:white;z-index:1}th,td{padding:8px 9px;text-align:left;border-right:1px solid #eceef2;vertical-align:top}tbody tr:nth-child(even){background:#f1f1f1}td input{width:88px;padding:6px;border:1px solid #d7dbe3;border-radius:3px}td input.just{width:180px}.charts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.chart{background:white;padding:13px;min-height:172px}.chart h3{font-size:16px;color:var(--navy);font-weight:500;margin:0 0 12px}.barrow{display:grid;grid-template-columns:85px 1fr 45px;align-items:center;gap:7px;font-size:11px;margin:10px 0}.bar{height:16px;background:var(--blue)}.empty{text-align:center;color:#777;padding:32px}.status{font-size:12px;color:var(--green);min-height:18px}.bad{color:var(--red)}@media(max-width:960px){.app{grid-template-columns:1fr}.side{display:block;padding:14px;}.brand{margin:0 0 16px}.side h3{margin-bottom:10px}.side label{display:inline-block;width:31%;margin-right:1%;vertical-align:top}.side select{max-width:100%}.reset-filter{width:auto}.side p{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.main{padding:0 12px 18px}.top{margin:0 -12px 14px;font-size:18px}.table-wrap{max-height:55vh}}
-</style>
-<style>
-:root{--blue:#17269f;--navy:#0b159b;--bg:#dedede;--ink:#3a3a3a;--line:#d5d8e0}
-body{background:var(--bg);font-family:Arial,sans-serif;color:var(--ink)}
-.app{grid-template-columns:198px minmax(0,1fr);gap:0;background:#d6d6d6}
-.side{position:sticky;top:0;height:100vh;overflow:auto;background:#09139b;padding:20px 15px;color:white}
-.brand{display:flex;align-items:center;gap:8px;margin:0 0 34px;font-size:12px;line-height:1.2;letter-spacing:.2px}
-.brand-logo{display:block;width:100%;height:154px;object-fit:contain;padding:7px;background:#fff;border-radius:3px}
-.side h3{margin:19px 0 8px;font-size:18px;font-weight:700}
-.side label{margin:0 0 15px;font-size:15px;font-weight:700}
-.side select{height:34px;margin-top:7px;border:1px solid #d7d9e3;border-radius:0;background:#fff;color:#29334c;font-size:13px}
-.reset-filter{border-color:#aab2ee;border-radius:2px;color:#fff;font-size:12px}
-.side p{color:#d4d8ff;font-size:11px}
-.main{padding:0 10px 20px;background:#d6d6d6}
-.top{height:62px;margin:0 -10px 8px;padding:7px 20px;background:#09139b;color:#fff;display:flex;align-items:center;justify-content:space-between;font-size:27px;letter-spacing:.2px}
-.toggle-sidebar{order:-1;width:34px;height:34px;border:1px solid #ffffff80;border-radius:3px;background:transparent;color:#fff;font-size:18px;cursor:pointer}
-.header-logo{display:block;width:160px;height:48px;object-fit:contain;filter:brightness(0) invert(1)}
-.drop{border:0;border-radius:0;box-shadow:0 3px 10px #0002}
-.actions{margin:10px 0;gap:7px}
-.button{background:#17269f;border-radius:2px;font-size:12px}
-.button.secondary{border-radius:2px;box-shadow:0 2px 5px #0001}
-.metrics{grid-template-columns:repeat(6,minmax(115px,1fr));gap:9px;margin:10px 0 15px}
-.metric{min-height:93px;padding:15px 18px;background:#fff;border:0;border-radius:0;box-shadow:3px 4px 10px #0003}
-.metric strong{margin:5px 0 2px;color:#16269c;font-size:24px;letter-spacing:-.4px}
-.metric small{font-size:12px;color:#5d5d5d}
-.filters{min-height:38px;padding:7px 10px;border-radius:0;box-shadow:0 2px 7px #0002}
-.filters input{height:28px;font-size:12px}
-.table-wrap{max-height:43vh;border:0;box-shadow:0 3px 10px #0003}
-table{font-size:12px}
-thead{background:#17269f}
-th{padding:9px 8px;font-weight:500}
-.table-head{background:#203f68;color:#fff;vertical-align:top}.table-head th{padding:7px 5px 6px;min-width:70px}.table-head th span{display:block;min-height:22px;white-space:nowrap}.table-head .header-filter{display:block;width:100%;height:28px;padding:2px 7px;border:1px solid #d7dbe3;border-radius:5px;background:#fff;color:#173274;text-align:right;font:11px Arial,sans-serif;cursor:pointer}.table-head .header-filter:hover,.table-head .header-filter.active{border-color:#244b8a;background:#eaf0fb;color:#102783}.excel-filter-menu{position:fixed;z-index:10000;width:min(300px,calc(100vw - 20px));max-height:min(430px,calc(100vh - 20px));padding:10px;border:1px solid #b8c4da;border-radius:6px;background:#fff;color:#233657;box-shadow:0 8px 28px #0b1b7133;font:12px Arial,sans-serif}.excel-filter-menu .menu-title{margin:0 0 8px;font-weight:700}.excel-filter-menu input[type=search]{width:100%;height:32px;padding:5px 8px;border:1px solid #cbd5e6;border-radius:4px;font:12px Arial,sans-serif}.excel-filter-menu .menu-actions{display:flex;gap:7px;padding:8px 0}.excel-filter-menu .menu-actions button{padding:4px 7px;border:1px solid #d4dceb;border-radius:4px;background:#f7f9fd;color:#183273;cursor:pointer}.excel-filter-menu .option-list{max-height:260px;overflow:auto;border-top:1px solid #e1e6ef}.excel-filter-menu .option-list label{display:flex;align-items:center;gap:7px;min-height:27px;padding:4px 5px;overflow-wrap:anywhere;cursor:pointer}.excel-filter-menu .option-list label:hover{background:#f0f4fb}.excel-filter-menu .menu-note{padding:7px 2px 0;color:#647494;font-size:11px}.excel-filter-menu .menu-footer{display:flex;justify-content:space-between;padding-top:8px;color:#536583;font-size:11px}.table-head th:nth-child(4){min-width:180px}.table-head th:last-child{min-width:145px}
-td{padding:6px 8px}
-tbody tr:nth-child(even){background:#ebebeb}
-tbody tr:nth-child(odd){background:#fff}
-td input{border-radius:0;font-size:12px}
-td input.just{width:160px}
-.charts{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
-.chart{min-height:190px;padding:12px;background:#fff;border:0;border-radius:0;box-shadow:3px 4px 10px #0003}
-.chart h3{margin-bottom:15px;color:#17269f;font-size:17px;font-weight:500}.chart-scope-note{grid-column:1/-1;margin:0 0 -4px}
-.barrow{grid-template-columns:78px 1fr 40px;gap:6px;margin:11px 0;font-size:11px}
-.bar{height:17px;background:#17269f}
-.notice{font-size:11px}
-.app.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)}
-.app.sidebar-collapsed .side{width:0;height:0;min-height:0;padding:0;overflow:hidden;opacity:0;pointer-events:none}
-@media(max-width:1200px){.metrics{grid-template-columns:repeat(3,minmax(130px,1fr))}.charts{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:960px){.app{grid-template-columns:1fr}.side{position:relative;height:auto;overflow:visible}.app.sidebar-collapsed .side{display:none}.brand{margin-bottom:18px}.brand-logo{width:220px;height:115px}.header-logo{width:120px;height:40px}.metrics{grid-template-columns:repeat(2,minmax(120px,1fr))}.charts{grid-template-columns:1fr}.top{font-size:20px}.table-wrap{max-height:55vh}.column-filters th{top:35px}}
+    :root{--blue:#17269f;--navy:#101c8e;--ink:#263142;--muted:#758091;--line:#e5e8ef;--bg:#f1f2f4;--white:#fff;--red:#c94c58;--green:#24845a}*{box-sizing:border-box}
+    body{margin:0;background:var(--bg);font:14px Arial,sans-serif;color:var(--ink)}
+    .app{min-height:100vh;display:grid;grid-template-columns:210px 1fr}
+    .side{background:var(--navy);color:#fff;padding:24px 16px}
+    .brand{font-size:18px;font-weight:800;margin:0 0 40px}.brand small{display:block;font-size:10px;letter-spacing:1.5px;margin-top:5px}.side h3{font-size:17px;margin:0 0 14px}.side label{display:block;margin:0 0 16px;font-weight:700;font-size:13px}.side select{display:block;width:100%;height:36px;margin-top:7px;padding:0 9px;border:1px solid #ccd3fa;border-radius:3px;background:white;color:#263142;font:13px Arial,sans-serif}.reset-filter{width:100%;padding:9px;border:1px solid #cbd1e4;border-radius:4px;background:transparent;color:white;font-weight:bold;cursor:pointer}.side p{font-size:11px;line-height:1.5;color:#d8dcff;margin-top:24px}.main{min-width:0;padding:0 22px 24px}.top{height:56px;background:var(--navy);color:white;margin:0 -22px 18px;padding:14px 24px;text-align:right;font-weight:bold;font-size:21px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0}.button{border:0;background:var(--blue);color:white;border-radius:4px;padding:10px 14px;cursor:pointer;font-weight:bold}.button.secondary{background:#fff;color:var(--blue);border:1px solid #cbd1e4}.button:disabled{opacity:.45;cursor:not-allowed}.file{display:none}.notice{font-size:12px;color:var(--muted);margin:5px 0}.drop{background:white;border:1px dashed #aab4d1;border-radius:7px;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.metrics{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:9px;margin:14px 0}.metric{background:#fff;padding:13px 15px;min-height:80px;box-shadow:0 2px 7px #0000000c}.metric strong{display:block;font-size:22px;color:var(--blue);margin-bottom:5px}.metric small{font-weight:bold;color:#656b74}.filters{display:flex;gap:9px;align-items:center;flex-wrap:wrap;background:#fff;padding:10px;margin-bottom:8px}.filters input{min-width:240px;padding:8px;border:1px solid var(--line);border-radius:3px;background:#fff}.table-wrap{background:white;overflow:auto;max-height:47vh;border:1px solid var(--line)}table{width:100%;border-collapse:collapse;font-size:12px}thead{position:sticky;top:0;background:var(--blue);color:white;z-index:1}th,td{padding:8px 9px;text-align:left;border-right:1px solid #eceef2;vertical-align:top}tbody tr:nth-child(even){background:#f1f1f1}td input{width:88px;padding:6px;border:1px solid #d7dbe3;border-radius:3px}td input.just{width:320px}.charts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}.chart{background:white;padding:13px;min-height:172px}.chart h3{font-size:16px;color:var(--navy);font-weight:500;margin:0 0 12px}.barrow{display:grid;grid-template-columns:85px 1fr 45px;align-items:center;gap:7px;font-size:11px;margin:10px 0}.bar{height:16px;background:var(--blue)}.empty{text-align:center;color:#777;padding:32px}.status{font-size:12px;color:var(--green);min-height:18px}.bad{color:var(--red)}@media(max-width:960px){.app{grid-template-columns:1fr}.side{display:block;padding:14px;}.brand{margin:0 0 16px}.side h3{margin-bottom:10px}.side label{display:inline-block;width:31%;margin-right:1%;vertical-align:top}.side select{max-width:100%}.reset-filter{width:auto}.side p{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}.main{padding:0 12px 18px}.top{margin:0 -12px 14px;font-size:18px}.table-wrap{max-height:55vh}}
+    .side{position:sticky;top:0;height:100vh;overflow:auto;background:#09139b;padding:20px 15px;color:white}
+    .brand{display:flex;align-items:center;gap:8px;margin:0 0 34px;font-size:12px;line-height:1.2;letter-spacing:.2px}
+    .brand-logo{display:block;width:100%;height:154px;object-fit:contain;padding:7px;background:#fff;border-radius:3px}
+    .side h3{margin:19px 0 8px;font-size:18px;font-weight:700}
+    .side label{margin:0 0 15px;font-size:15px;font-weight:700}
+    .side select{height:34px;margin-top:7px;border:1px solid #d7d9e3;border-radius:0;background:#fff;color:#29334c;font-size:13px}
+    .reset-filter{border-color:#aab2ee;border-radius:2px;color:#fff;font-size:12px}
+    .side p{color:#d4d8ff;font-size:11px}
+    .main{padding:0 10px 20px;background:#d6d6d6}
+    .top{height:62px;margin:0 -10px 8px;padding:7px 20px;background:#09139b;color:#fff;display:flex;align-items:center;justify-content:space-between;font-size:27px;letter-spacing:.2px}
+    .toggle-sidebar{order:-1;width:34px;height:34px;border:1px solid #ffffff80;border-radius:3px;background:transparent;color:#fff;font-size:18px;cursor:pointer}
+    .header-logo{display:block;width:160px;height:48px;object-fit:contain;filter:brightness(0) invert(1)}
+    .drop{border:0;border-radius:0;box-shadow:0 3px 10px #0002}
+    .actions{margin:10px 0;gap:7px}
+    .button{background:#17269f;border-radius:2px;font-size:12px}
+    .button.secondary{border-radius:2px;box-shadow:0 2px 5px #0001}
+    .metrics{grid-template-columns:repeat(6,minmax(115px,1fr));gap:9px;margin:10px 0 15px}
+    .metric{min-height:93px;padding:15px 18px;background:#fff;border:0;border-radius:0;box-shadow:3px 4px 10px #0003}
+    .metric strong{margin:5px 0 2px;color:#16269c;font-size:24px;letter-spacing:-.4px}
+    .metric small{font-size:12px;color:#5d5d5d}
+    .filters{min-height:38px;padding:7px 10px;border-radius:0;box-shadow:0 2px 7px #0002}
+    .filters input{height:28px;font-size:12px}
+    .table-wrap{max-height:43vh;border:0;box-shadow:0 3px 10px #0003}
+    table{font-size:12px}
+    thead{background:#17269f}
+    th{padding:9px 8px;font-weight:500}
+    .table-head{background:#203f68;color:#fff;vertical-align:top}
+    .table-head th{padding:7px 5px 6px;min-width:70px}
+    .table-head th span{display:block;min-height:22px;white-space:nowrap}
+    .table-head .header-filter{display:block;width:100%;height:28px;padding:2px 7px;border:1px solid #d7dbe3;border-radius:5px;background:#fff;color:#173274;text-align:right;font:11px Arial,sans-serif;cursor:pointer}
+    .table-head .header-filter:hover,.table-head .header-filter.active{border-color:#244b8a;background:#eaf0fb;color:#102783}
+    .excel-filter-menu{position:fixed;z-index:10000;width:min(300px,calc(100vw - 20px));max-height:min(430px,calc(100vh - 20px));padding:10px;border:1px solid #b8c4da;border-radius:6px;background:#fff;color:#233657;box-shadow:0 8px 28px #0b1b7133;font:12px Arial,sans-serif}
+    .excel-filter-menu .menu-title{margin:0 0 8px;font-weight:700}
+    .excel-filter-menu input[type=search]{width:100%;height:32px;padding:5px 8px;border:1px solid #cbd5e6;border-radius:4px;font:12px Arial,sans-serif}
+    .excel-filter-menu .menu-actions{display:flex;gap:7px;padding:8px 0}
+    .excel-filter-menu .menu-actions button{padding:4px 7px;border:1px solid #d4dceb;border-radius:4px;background:#f7f9fd;color:#183273;cursor:pointer}
+    .excel-filter-menu .option-list{max-height:260px;overflow:auto;border-top:1px solid #e1e6ef}
+    .excel-filter-menu .option-list label{display:flex;align-items:center;gap:7px;min-height:27px;padding:4px 5px;overflow-wrap:anywhere;cursor:pointer}
+    .excel-filter-menu .option-list label:hover{background:#f0f4fb}.excel-filter-menu .menu-note{padding:7px 2px 0;color:#647494;font-size:11px}
+    .excel-filter-menu .menu-footer{display:flex;justify-content:space-between;padding-top:8px;color:#536583;font-size:11px}.table-head th:nth-child(4){min-width:180px}.table-head th:last-child{min-width:145px}
+    td{padding:6px 8px}
+    tbody tr:nth-child(even){background:#ebebeb}
+    tbody tr:nth-child(odd){background:#fff}
+    td input{border-radius:0;font-size:12px}
+    td input.just{width:320px}
+    .charts{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+    .chart{min-height:190px;padding:12px;background:#fff;border:0;border-radius:0;box-shadow:3px 4px 10px #0003}
+    .chart h3{margin-bottom:15px;color:#17269f;font-size:17px;font-weight:500}.chart-scope-note{grid-column:1/-1;margin:0 0 -4px}
+    .barrow{grid-template-columns:78px 1fr 40px;gap:6px;margin:11px 0;font-size:11px}
+    .bar{height:17px;background:#17269f}
+    .notice{font-size:11px}
+    .app.sidebar-collapsed{grid-template-columns:0 minmax(0,1fr)}
+    .app.sidebar-collapsed .side{width:0;height:0;min-height:0;padding:0;overflow:hidden;opacity:0;pointer-events:none}
+    @media(max-width:1200px){.metrics{grid-template-columns:repeat(3,minmax(130px,1fr))}.charts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:960px){.app{grid-template-columns:1fr}
+    .side{position:relative;height:auto;overflow:visible}
+    .app.sidebar-collapsed 
+    .side{display:none}.brand{margin-bottom:18px}
+    .brand-logo{width:220px;height:115px}
+    .header-logo{width:120px;height:40px}
+    .metrics{grid-template-columns:repeat(2,minmax(120px,1fr))}
+    .charts{grid-template-columns:1fr}.top{font-size:20px}
+    .table-wrap{max-height:55vh}
+    .column-filters th{top:35px}}
 </style>
 <style>
 :root{--navy:#0b1b71;--blue:#102783;--bg:#f6f7fb;--ink:#10256f;--line:#d7deed;--muted:#6576a6;--red:#c93637;--green:#087b42}
@@ -93,7 +114,7 @@ tbody tr:nth-child(even){background:#f2f5fb}
 tbody tr:nth-child(odd){background:#fff}
 td{padding:7px 8px;border-bottom:1px solid #d8e0ef;vertical-align:middle}
 td input{border:1px solid #d4dced;border-radius:2px;color:#10256f}
-td input.just{width:170px}
+td input.just{width:320px}
 .status-badge{display:inline-block;padding:3px 9px;border:1px solid currentColor;border-radius:14px;font-size:10px;font-weight:700;white-space:nowrap}
 .status-badge.ok{color:#087b42;background:#f4fff8}
 .status-badge.pending{color:#8a5a00;background:#fffaf0}
@@ -108,21 +129,48 @@ td input.just{width:170px}
 @media(max-width:1200px){.metrics{grid-template-columns:repeat(3,minmax(130px,1fr))}.charts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:960px){.main{padding:0 10px 18px}.top{margin:0 -10px 10px;padding:6px 10px;font-size:18px}.page-title{font-size:19px}.brand-logo{width:220px;height:115px}.metrics{grid-template-columns:repeat(2,minmax(120px,1fr))}.charts{grid-template-columns:1fr}}
 @media(max-width:560px){.top{gap:7px}.tabs{margin-left:4px}.tab{padding:0 7px;font-size:10px}.page-title{font-size:15px;gap:3px}.sort-mark{font-size:12px}.metrics{grid-template-columns:1fr 1fr}.metric{padding:10px}.metric em{white-space:normal}.filters input{width:100%}}
-</style><link rel="stylesheet" href="./assets/sistema.css">
-<style>
-.app{display:block!important;grid-template-columns:1fr!important;min-height:calc(100vh - 76px);background:#f6f7fb!important}
-.main{min-width:0;padding:0 22px 24px!important;background:#f6f7fb!important}
-.top{justify-content:flex-end!important}
-.top-filters{display:grid!important;grid-template-columns:repeat(5,minmax(135px,1fr)) auto;align-items:end;gap:12px;margin:0 0 12px;padding:14px 16px!important;border:1px solid #d7deed!important;border-radius:8px!important;background:#fff!important;box-shadow:0 2px 8px #12256e12!important}
-.top-filters label{display:flex;min-width:0;flex-direction:column;gap:6px;color:#10256f;font-size:12px;font-weight:700}
-.top-filters select{width:100%;height:38px;padding:0 10px;color:#173274;background:#fff;font:13px Arial,sans-serif}
-.top-filters .reset-filter{width:auto;min-height:38px;padding:0 15px;border:1px solid #102783;border-radius:8px;background:#102783;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
-@media(max-width:1100px){.top-filters{grid-template-columns:repeat(3,minmax(130px,1fr))}.top-filters .reset-filter{justify-self:start}}
-@media(max-width:760px){.main{padding:0 10px 18px!important}.top-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px!important}.top-filters .reset-filter{width:100%}}
-@media(max-width:420px){.top-filters{grid-template-columns:1fr}}
-</style><style>.status{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:5px 10px;border-radius:4px}.status.loading{color:#173274;background:#eef3ff}.status-spinner{width:13px;height:13px;border:2px solid #c5d2f2;border-top-color:#102783;border-radius:50%;animation:status-spin .75s linear infinite}@keyframes status-spin{to{transform:rotate(360deg)}}.status.bad{color:#b4232d;background:#fff0f0}</style></head>
-<body data-auth="required"><header class="system-bar"><div class="system-brand"><img class="brand-logo" src="./assets/a2m-logo-horizontal.svg" alt="A2M Distribuidora — logo horizontal" style="max-width: 150px"></div><nav class="system-nav" aria-label="Navegação principal"><a href="./index.html">Visão geral</a><a class="active" href="./conciliacao-estoque.html">Conciliação</a><a href="./kpis-estoque.html">KPIs Estoque</a><a href="./shelf-life.html">Shelf-Life</a><a href="./tms.html">Operação TMS</a><button type="button" data-signout>Sair</button></nav></header><div class="app">
-<main class="main"><section class="filters top-filters" aria-label="Filtros da conciliação"><label>Armazém<select id="warehouse"><option value="">Todos</option></select></label><label>Status<select id="state"><option value="">Todos</option></select></label><label>Data Conciliação<select id="dateFilter"><option value="">Todas</option></select></label><label>Segmento<select id="segmentFilter"><option value="">Todos</option></select></label><label>Curva ABC<select id="curveFilter"><option value="">Todas</option></select></label><button class="reset-filter" id="resetFilters" type="button">Limpar filtros</button></section><div class="drop"><div><b>Base de estoque</b><div class="notice" id="fileInfo">Selecione Excel (.xlsx/.xls) ou CSV com as colunas ID Sistema e Estoque Sistema.</div></div><div><label class="button" for="upload">Selecionar arquivo da base</label><input class="file" id="upload" type="file" accept=".xlsx,.xls,.csv"></div></div>
+</style>
+    <link rel="stylesheet" href="./assets/sistema.css"> 
+    <style>
+        .app{display:block!important;grid-template-columns:1fr!important;min-height:calc(100vh - 76px);background:#f6f7fb!important}
+        .main{min-width:0;padding:0 22px 24px!important;background:#f6f7fb!important}
+        .top{justify-content:flex-end!important}
+        .top-filters{display:grid!important;grid-template-columns:repeat(5,minmax(135px,1fr)) auto;align-items:end;gap:12px;margin:0 0 12px;padding:14px 16px!important;border:1px solid #d7deed!important;border-radius:8px!important;background:#fff!important;box-shadow:0 2px 8px #12256e12!important}
+        .top-filters label{display:flex;min-width:0;flex-direction:column;gap:6px;color:#10256f;font-size:12px;font-weight:700}
+        .top-filters select{width:100%;height:38px;padding:0 10px;color:#173274;background:#fff;font:13px Arial,sans-serif}
+        .top-filters .reset-filter{width:auto;min-height:38px;padding:0 15px;border:1px solid #102783;border-radius:8px;background:#102783;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
+        @media(max-width:1100px){.top-filters{grid-template-columns:repeat(3,minmax(130px,1fr))}.top-filters .reset-filter{justify-self:start}}
+        @media(max-width:760px){.main{padding:0 10px 18px!important}.top-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px!important}.top-filters .reset-filter{width:100%}}
+        @media(max-width:420px){.top-filters{grid-template-columns:1fr}}
+    </style>
+    <style>
+        .status{display:inline-flex;align-items:center;gap:8px;min-height:28px;padding:5px 10px;border-radius:4px}
+        .status
+        .loading{color:#173274;background:#eef3ff}
+        .status-spinner{width:13px;height:13px;border:2px solid #c5d2f2;border-top-color:#102783;border-radius:50%;animation:status-spin .75s linear infinite}
+        @keyframes status-spin{to{transform:rotate(360deg)}}
+        .status.bad{color:#b4232d;background:#fff0f0}
+        .head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:20px}
+        .head h1{margin:0;color:var(--a2m-deep);font-size:28px}
+        .head p{color:var(--a2m-muted);margin:0px 0 0}
+        .head{display:block}
+        .wrap{max-width:1440px;margin:30px auto;padding:0 24px 20px}
+    </style>
+</head>
+<body data-auth="required">
+    <header class="system-bar">
+        <div class="system-brand"><img class="brand-logo" src="./assets/a2m-logo-horizontal.svg" alt="A2M Distribuidora — logo horizontal" style="max-width: 150px"></div><nav class="system-nav" aria-label="Navegação principal"><a href="./index.html">Visão geral</a><a class="active" href="./conciliacao-estoque.html">Conciliação</a><a href="./kpis-estoque.html">KPIs Estoque</a><a href="./shelf-life.html">Shelf-Life</a><a href="./tms.html">Operação TMS</a><button type="button" data-signout>Sair</button></nav></header><div class="app">
+<main class="main">
+    <section class="filters top-filters" aria-label="Filtros da conciliação">
+        <label>Armazém<select id="warehouse">
+            <option value="">Todos</option>
+        </select>
+    </label>
+    <label>Status<select id="state">
+        <option value="">Todos</option>
+    </select>
+</label>
+<label>Data Conciliação<select id="dateFilter"><option value="">Todas</option></select></label><label>Segmento<select id="segmentFilter"><option value="">Todos</option></select></label><label>Curva ABC<select id="curveFilter"><option value="">Todas</option></select></label><button class="reset-filter" id="resetFilters" type="button">Limpar filtros</button></section><div class="drop"><div><b>Base de estoque</b><div class="notice" id="fileInfo">Selecione Excel (.xlsx/.xls) ou CSV com as colunas ID Sistema e Estoque Sistema.</div></div><div><label class="button" for="upload">Selecionar arquivo da base</label><input class="file" id="upload" type="file" accept=".xlsx,.xls,.csv"></div></div>
 <div class="actions"><button class="button secondary" id="backup">Exportar backup JSON</button><button class="button secondary" id="restoreBtn">Restaurar backup JSON</button><input class="file" id="restore" type="file" accept=".json"><button class="button secondary" id="csv">Exportar conciliação CSV</button><button class="button secondary" id="clear">Limpar base deste navegador</button><span class="status loading" id="status" role="status" aria-live="polite"><i class="status-spinner" aria-hidden="true"></i>Conectando ao Supabase para buscar a base atualizada…</span></div>
 <section class="metrics"><div class="metric"><strong id="m-total">0</strong><small>Itens conciliados</small><em id="m-pending">+ 0 pendentes no recorte</em></div><div class="metric"><strong id="m-diff">0</strong><small>Diferenças</small><em id="m-balance">0 sobras · 0 faltas</em></div><div class="metric"><strong id="m-acc">—</strong><small>Acurácia do recorte</small><em id="m-acc-detail" title="Percentual calculado sobre os itens conferidos após aplicar os filtros.">Considera os filtros ativos</em></div><div class="metric"><strong id="m-value">—</strong><small>Valor conciliado*</small><em id="m-value-detail" title="Soma do estoque do sistema multiplicado pelo custo unitário para itens contados.">Aguardando base</em></div><div class="metric"><strong id="m-loss">R$ 0,00</strong><small>Valor diferença*</small><em id="m-value-split">sobra R$ 0,00 · falta R$ 0,00</em></div><div class="metric"><strong id="m-days">0</strong><small>Dias conciliados</small><em id="m-day-range">—</em></div></section>
 <div class="filters"><label>Buscar <input id="search" placeholder="Buscar produto, ID ou justificativa..."></label><span class="notice" id="count"></span><div class="pager"><button type="button" class="button secondary" id="prevPage">Anterior</button><span class="notice" id="pageInfo"></span><button type="button" class="button secondary" id="nextPage">Próxima</button></div></div>
