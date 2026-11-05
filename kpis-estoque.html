@@ -11,10 +11,31 @@
 </style>
 </head>
 <body data-auth="required">
-<header class="system-bar"><div class="system-brand"><img class="brand-logo" src="./assets/a2m-logo-horizontal.svg" alt="A2M Distribuidora — logo horizontal" style="max-width:150px"></div><nav class="system-nav" aria-label="Navegação principal"><a href="./portal.html">Visão geral</a><a href="./conciliacao-estoque.html">Conciliação</a><a class="active" href="./kpis-estoque.html">KPIs Estoque</a><a href="./shelf-life.html">Shelf-Life</a><a href="./tms.html">Operação TMS</a><button type="button" data-signout>Sair</button></nav>
+<header class="system-bar">
+    <div class="system-brand">
+        <img class="brand-logo" src="./assets/a2m-logo-horizontal.svg" alt="A2M Distribuidora — logo horizontal" style="max-width:150px"></div>
+        <nav class="system-nav" aria-label="Navegação principal">
+            <a href="./portal.html">Visão geral</a>
+            <a href="./conciliacao-estoque.html">Conciliação</a>
+            <a class="active" href="./kpis-estoque.html">KPIs Estoque</a>
+            <a href="./shelf-life.html">Shelf-Life</a>
+            <a href="./tms.html">Operação TMS</a>
+            <button type="button" data-signout>Sair</button>
+        </nav>
 </header>
 <main class="shell">
-<section class="page-head"><div><h1>KPIs de Estoque</h1><p>Giro, cobertura e valor armazenado por produto e armazém.</p></div><div class="update"><input id="upload" class="file-input" type="file" accept=".xlsx,.xls"><label class="btn" for="upload">Atualizar base Excel</label><button id="reset" class="btn secondary" type="button">Limpar filtros</button><div class="source" id="source">Conectando ao Supabase…</div></div></section>
+    <section class="page-head">
+        <div>
+            <h1>KPIs de Estoque</h1>
+            <p>Giro, cobertura e valor armazenado por produto e armazém.</p>
+        </div>
+        <div class="update">
+            <input id="upload" class="file-input" type="file" accept=".xlsx,.xls">
+            <label class="btn" for="upload">Atualizar base Excel</label>
+            <button id="reset" class="btn secondary" type="button">Limpar filtros</button>
+            <div class="source" id="source">Conectando ao Supabase…</div>
+        </div>
+    </section>
     <section class="filters" aria-label="Filtros">
         <div class="field">
             <label for="warehouse">Armazém</label>
@@ -47,9 +68,76 @@
             </select>
         </div>
     </section>
-<section class="cards"><article class="card"><small>Valor Armazenado</small><strong id="kpiValue">—</strong><em>Valor de estoque no recorte</em></article><article class="card"><small>Cobertura de Estoque</small><strong id="kpiCoverage">—</strong><em>Dias, ponderados pela venda em 30 dias</em></article><article class="card"><small>Estoque Atual</small><strong id="kpiStock">—</strong><em>Unidades disponíveis</em></article><article class="card"><small>SKUs Ativos</small><strong id="kpiSkus">—</strong><em>Produtos com estoque positivo</em></article><article class="card"><small>Armazéns Ativos</small><strong id="kpiWarehouses">—</strong><em>Unidades com estoque positivo</em></article></section>
-<section class="panel table-panel"><h2>Produtos em estoque</h2><div class="table-scroll"><table><thead><tr><th>ID Produto</th><th>Produto</th><th>Giro</th><th>Fabricante</th><th class="num">Estoque Atual</th><th class="num">Valor Armazenado</th><th class="num">Itens Vendidos · 30 dias</th><th>Status para Puxada</th></tr></thead><tbody id="products"><tr><td colspan="8" class="empty">Carregando base…</td></tr></tbody></table></div><div class="status-line" id="message"></div></section>
-<section class="lower-grid"><article class="panel"><h2>Valor Armazenado por Fabricante</h2><div class="bars" id="byManufacturer"></div></article><article class="panel"><h2>Valor Armazenado por Giro</h2><div class="bars" id="byTurnover"></div></article><article class="panel"><h2>Valor Armazenado por Armazém</h2><div class="bars" id="byWarehouse"></div></article><article class="panel"><h2>Valor Armazenado por Subgrupo</h2><div class="bars" id="bySegment"></div></article></section>
+    <section class="cards">
+        <article class="card">
+            <small>Valor Armazenado</small>
+            <strong id="kpiValue">—</strong>
+            <em>Valor de estoque no recorte</em>
+        </article>
+        <article class="card">
+            <small>Cobertura de Estoque</small>
+            <strong id="kpiCoverage">—</strong>
+            <em>Dias, ponderados pela venda em 30 dias</em>
+        </article>
+        <article class="card">
+            <small>Estoque Atual</small>
+            <strong id="kpiStock">—</strong>
+            <em>Unidades disponíveis</em>
+        </article>
+        <article class="card">
+            <small>SKUs Ativos</small>
+            <strong id="kpiSkus">—</strong>
+            <em>Produtos com estoque positivo</em>
+        </article>
+        <article class="card">
+            <small>Armazéns Ativos</small>
+            <strong id="kpiWarehouses">—</strong>
+            <em>Unidades com estoque positivo</em>
+        </article>
+    </section>
+    <section class="lower-grid">
+        <article class="panel">
+            <h2>Valor Armazenado por Fabricante</h2>
+            <div class="bars" id="byManufacturer"></div>
+        </article>
+        <article class="panel">
+            <h2>Valor Armazenado por Giro</h2>
+            <div class="bars" id="byTurnover"></div>
+        </article>
+        <article class="panel">
+            <h2>Valor Armazenado por Armazém</h2>
+            <div class="bars" id="byWarehouse"></div>
+        </article>
+        <article class="panel">
+            <h2>Valor Armazenado por Subgrupo</h2>
+            <div class="bars" id="bySegment"></div>
+        </article>
+    </section>
+    <section class="panel table-panel">
+        <h2>Produtos em estoque</h2>
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Produto</th>
+                        <th>Produto</th>
+                        <th>Giro</th>
+                        <th>Fabricante</th>
+                        <th class="num">Estoque Atual</th>
+                        <th class="num">Valor Armazenado</th>
+                        <th class="num">Itens Vendidos · 30 dias</th>
+                        <th>Status para Puxada</th>
+                    </tr>
+                </thead>
+                <tbody id="products">
+                    <tr>
+                        <td colspan="8" class="empty">Carregando base…</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="status-line" id="message"></div>
+    </section>
 <p class="footnote">Fonte: abas “Estoque Geral” e “Valor Armazenado” da planilha KPI Giro de Estoque. A cobertura agregada é calculada como estoque atual ÷ venda dos últimos 30 dias × 30. O envio de uma nova planilha substitui a carga anterior somente quando todos os registros forem gravados.</p>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./assets/supabase-config.js"></script><script src="./assets/auth.js"></script>
