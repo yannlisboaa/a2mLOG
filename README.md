@@ -74,3 +74,12 @@ As mudanças são preparadas e revisadas na cópia local primeiro. A versão pú
 - Se o arquivo estiver bloqueado, entre com uma conta cujo perfil em `public.profiles` seja `admin`; usuários `operador` consultam e atualizam o tratamento das exceções, mas não publicam cargas.
 - Para promover o administrador inicial, substitua `SEU_EMAIL_AQUI` em `supabase/promover-admin.sql` pelo e-mail exato da conta no Supabase Auth e execute o script no SQL Editor. Depois, encerre e inicie a sessão no portal.
 - Se a página avisar que a estrutura está ausente, execute `supabase/tms.sql` no SQL Editor do projeto configurado no portal.
+
+
+### Tempos de processo e mapa
+
+- `supabase/tms.sql` adiciona os horários de inclusão, faturamento e separação, além de calcular os intervalos entre eles e o tempo de entrega.
+- O HTML reconhece os cabeçalhos `HORARIO DE INCLUSÃO`, `HORARIO DE FATURAMENTO` e `HORARIO DE SEPARAÇÃO`, mesmo quando as células contêm apenas horas. Os cards e a tabela detalhada respeitam os filtros de data, CD, atendimento e entregador.
+- Quando os campos trazem somente o horário, uma etapa com hora menor que a anterior é tratada como virada para o dia seguinte. Se o processo puder durar mais de 24 horas, a exportação deverá incluir as datas de cada etapa para calcular o intervalo exato.
+- Após executar a migração atualizada, publique novamente o arquivo para preencher os novos campos de horário no Supabase. O tempo de entrega pode usar os horários de rota ou `TEMPO EM ROTA`.
+- O mapa agrega pedidos por CD/região e reage aos mesmos filtros do painel. Belém, Macapá e Manaus usam as coordenadas das unidades informadas; Santarém permanece aproximado. Pedidos sem região mapeada são informados abaixo do mapa. A base cartográfica usa Leaflet e o serviço World Street Map da Esri, com atribuição visível.

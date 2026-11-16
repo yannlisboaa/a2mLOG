@@ -34,6 +34,9 @@ create table if not exists public.tms_orders (
 -- Novos tempos de processo e posição aproximada do centro/região operacional.
 -- Os timestamps de faturamento e separação são opcionais se o relatório não os trouxer.
 alter table public.tms_orders
+  add column if not exists included_time time,
+  add column if not exists billed_time time,
+  add column if not exists separated_time time,
   add column if not exists billed_at timestamptz,
   add column if not exists separated_at timestamptz,
   add column if not exists region text,
@@ -53,6 +56,18 @@ alter table public.tms_orders
     case when route_started_at is not null and finished_at is not null and finished_at >= route_started_at
       then round(extract(epoch from (finished_at - route_started_at)))::integer
       else route_seconds end
+  ) stored,
+  add column if not exists inclusion_to_billing_clock_seconds integer generated always as (
+    case when included_time is not null and billed_time is not null
+      then round(extract(epoch from (billed_time - included_time +
+        case when billed_time < included_time then interval '1 day' else interval '0 seconds' end)))::integer
+      else null end
+  ) stored,
+  add column if not exists billing_to_separation_clock_seconds integer generated always as (
+    case when billed_time is not null and separated_time is not null
+      then round(extract(epoch from (separated_time - billed_time +
+        case when separated_time < billed_time then interval '1 day' else interval '0 seconds' end)))::integer
+      else null end
   ) stored;
 
 create index if not exists tms_orders_import_region_idx on public.tms_orders (import_id, region);
