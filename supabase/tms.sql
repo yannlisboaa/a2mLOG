@@ -31,6 +31,32 @@ create table if not exists public.tms_orders (
   created_at timestamptz not null default now()
 );
 
+-- Novos tempos de processo e posição aproximada do centro/região operacional.
+-- Os timestamps de faturamento e separação são opcionais se o relatório não os trouxer.
+alter table public.tms_orders
+  add column if not exists billed_at timestamptz,
+  add column if not exists separated_at timestamptz,
+  add column if not exists region text,
+  add column if not exists region_latitude numeric(9,6),
+  add column if not exists region_longitude numeric(9,6);
+
+alter table public.tms_orders
+  add column if not exists inclusion_to_billing_seconds integer generated always as (
+    case when included_at is not null and billed_at is not null and billed_at >= included_at
+      then round(extract(epoch from (billed_at - included_at)))::integer else null end
+  ) stored,
+  add column if not exists billing_to_separation_seconds integer generated always as (
+    case when billed_at is not null and separated_at is not null and separated_at >= billed_at
+      then round(extract(epoch from (separated_at - billed_at)))::integer else null end
+  ) stored,
+  add column if not exists delivery_seconds integer generated always as (
+    case when route_started_at is not null and finished_at is not null and finished_at >= route_started_at
+      then round(extract(epoch from (finished_at - route_started_at)))::integer
+      else route_seconds end
+  ) stored;
+
+create index if not exists tms_orders_import_region_idx on public.tms_orders (import_id, region);
+
 create table if not exists public.tms_exceptions (
   id uuid primary key default gen_random_uuid(),
   import_id uuid not null references public.tms_imports(id) on delete cascade,
