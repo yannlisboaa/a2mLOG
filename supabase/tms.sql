@@ -13,6 +13,8 @@ create table if not exists public.tms_orders (
   import_id uuid not null references public.tms_imports(id) on delete cascade,
   order_ref text not null,
   cd text,
+  municipality text,
+  bairro text,
   service_type text not null,
   status text,
   deadline_flag text,
@@ -34,11 +36,15 @@ create table if not exists public.tms_orders (
 -- Novos tempos de processo e posição aproximada do centro/região operacional.
 -- Os timestamps de faturamento e separação são opcionais se o relatório não os trouxer.
 alter table public.tms_orders
+  add column if not exists municipality text,
+  add column if not exists bairro text,
   add column if not exists included_time time,
   add column if not exists billed_time time,
   add column if not exists separated_time time,
   add column if not exists billed_at timestamptz,
   add column if not exists separated_at timestamptz,
+  add column if not exists times_updated_by uuid references auth.users(id) on delete set null,
+  add column if not exists times_updated_at timestamptz,
   add column if not exists region text,
   add column if not exists region_latitude numeric(9,6),
   add column if not exists region_longitude numeric(9,6);
@@ -123,6 +129,13 @@ create policy "authenticated update tms exception workflow" on public.tms_except
 for update to authenticated using (
   exists (select 1 from public.tms_imports i where i.id = import_id and i.status = 'ready')
 ) with check (auth.uid() is not null and updated_by = auth.uid());
+drop policy if exists "authenticated add deadline validation exception" on public.tms_exceptions;
+create policy "authenticated add deadline validation exception" on public.tms_exceptions
+for insert to authenticated with check (
+  category = 'Entrega concluída após o horário limite'
+  and created_by = auth.uid()
+  and exists (select 1 from public.tms_imports i where i.id = import_id and i.status = 'ready')
+);
 drop policy if exists "admin manages tms exceptions" on public.tms_exceptions;
 create policy "admin manages tms exceptions" on public.tms_exceptions
 for all to authenticated using (public.current_a2m_role() = 'admin')
@@ -132,6 +145,8 @@ with check (public.current_a2m_role() = 'admin');
 -- edit triage fields on an exception (status, owner and note).
 grant select, insert, update, delete on public.tms_imports to authenticated;
 grant select, insert, update, delete on public.tms_orders to authenticated;
+revoke update on public.tms_orders from authenticated;
+grant update (included_time, billed_time, separated_time, deadline_time, finished_at, times_updated_by, times_updated_at) on public.tms_orders to authenticated;
 grant select, insert, update, delete on public.tms_exceptions to authenticated;
 revoke update on public.tms_exceptions from authenticated;
 grant update (status, assigned_to, note, updated_by, updated_at) on public.tms_exceptions to authenticated;

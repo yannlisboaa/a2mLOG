@@ -51,12 +51,12 @@ As mudanças são preparadas e revisadas na cópia local primeiro. A versão pú
 
 ## Operação TMS
 
-- `tms.html`: painel integrado ao menu A2M, com filtros, produtividade, ranking de entregadores e fila de tratamento de exceções.
-- `supabase/tms.sql`: migração para criar tabelas privadas de cargas, pedidos e exceções, usando o controle de acesso por perfil já existente. Execute no SQL Editor antes de usar o módulo.
-- A aba `Pedidos` do Excel é importada por um administrador. O painel grava somente identificador e dados operacionais; nome e endereço do cliente não são gravados. Operadores autenticados podem consultar e tratar as exceções; somente administradores publicam ou substituem a base.
-- A publicação mantém a carga mais recente concluída. As bibliotecas SheetJS e Chart.js são carregadas por CDN.
+- `tms.html`: painel integrado ao menu A2M, com filtros, produtividade, ranking de entregadores, tempos calculados e mapa de calor por bairro.
+- A versão anterior fornecida pelo usuário foi restaurada como base oficial para as próximas atualizações do módulo TMS.
+- `supabase/tms.sql`: migração para criar tabelas privadas de cargas e pedidos, usando o controle de acesso por perfil já existente. Execute no SQL Editor antes de usar o módulo.
+- A aba `Pedidos` do Excel é importada por um administrador. O painel grava somente identificador e dados operacionais; nome e endereço do cliente não são gravados. Usuários autenticados consultam os dados operacionais; somente administradores publicam ou substituem a base.
+- A publicação mantém a carga mais recente concluída. As bibliotecas SheetJS, Chart.js e MapLibre são carregadas por CDN.
 - SLA considera somente entregas com flag `No Prazo` ou `Em Atraso`. O ranking considera entregas concluídas com flag, ordena por taxa no prazo e desempata por volume. Casos com menos de 10 entregas classificadas são identificados como amostra pequena.
-- A fila de exceções sinaliza atraso, urgência/emergência pendente, entrega concluída sem flag, CD ausente e entrega concluída sem entregador ou horário final. O responsável e o status do tratamento podem ser atualizados no painel. Evite inserir dados pessoais de clientes nas observações.
 - A coluna `Nota Informada (Entregador)` do arquivo não é importada: contém textos e números de referência, não uma nota numérica validada para avaliação.
 
 ## Melhorias futuras
@@ -66,12 +66,16 @@ As mudanças são preparadas e revisadas na cópia local primeiro. A versão pú
 3. Normalizar produtividade por escala/turno e carga de rota, para comparações justas entre entregadores.
 4. Monitorar completude dos campos, reentregas/cancelamentos e motivos de atraso quando o TMS disponibilizar esses dados.
 5. Integrar `Resumo Diário Incentivos` para auditoria de incentivos por entregador/dia, conforme as regras de elegibilidade.
-6. Avaliar mapa agregado por bairro/município sem expor nomes ou endereços.
+6. Ampliar a cobertura do mapa de calor por região/CD sem expor nomes ou endereços de clientes.
 
+
+### Pedidos de retirada
+
+- Registros com tipo de atendimento `RETIRADA` exibem “Não se aplica” no tempo de entrega e não exibem entregador na tabela nem no filtro de entregadores. Os intervalos internos de inclusão/faturamento/separação continuam disponíveis quando as horas estiverem no relatório.
 
 ### Solução de problemas de acesso
 
-- Se o arquivo estiver bloqueado, entre com uma conta cujo perfil em `public.profiles` seja `admin`; usuários `operador` consultam e atualizam o tratamento das exceções, mas não publicam cargas.
+- A publicação de novas cargas exige uma conta cujo perfil em `public.profiles` seja `admin`; usuários `operador` podem consultar o painel, mas não publicar cargas.
 - Para promover o administrador inicial, substitua `SEU_EMAIL_AQUI` em `supabase/promover-admin.sql` pelo e-mail exato da conta no Supabase Auth e execute o script no SQL Editor. Depois, encerre e inicie a sessão no portal.
 - Se a página avisar que a estrutura está ausente, execute `supabase/tms.sql` no SQL Editor do projeto configurado no portal.
 
@@ -79,7 +83,7 @@ As mudanças são preparadas e revisadas na cópia local primeiro. A versão pú
 ### Tempos de processo e mapa
 
 - `supabase/tms.sql` adiciona os horários de inclusão, faturamento e separação, além de calcular os intervalos entre eles e o tempo de entrega.
-- O HTML reconhece os cabeçalhos `HORARIO DE INCLUSÃO`, `HORARIO DE FATURAMENTO` e `HORARIO DE SEPARAÇÃO`, mesmo quando as células contêm apenas horas. Os cards e a tabela detalhada respeitam os filtros de data, CD, atendimento e entregador.
+- O HTML reconhece os cabeçalhos `HORARIO DE INCLUSÃO`, `HORARIO DE FATURAMENTO` e `HORARIO DE SEPARAÇÃO`, mesmo quando as células contêm apenas horas. A seção de tempos fica recolhida para ocupar menos espaço e, ao abrir, oferece busca, ordenação por coluna, paginação, filtros por coluna com busca e seleção múltipla (CD, bairro presente na tabela, atendimento — incluindo somente retiradas —, entregador e validação do prazo), exportação CSV e edição administrativa dos horários limite e de conclusão. Os filtros do painel também se aplicam a ela.
 - Quando os campos trazem somente o horário, uma etapa com hora menor que a anterior é tratada como virada para o dia seguinte. Se o processo puder durar mais de 24 horas, a exportação deverá incluir as datas de cada etapa para calcular o intervalo exato.
 - Após executar a migração atualizada, publique novamente o arquivo para preencher os novos campos de horário no Supabase. O tempo de entrega pode usar os horários de rota ou `TEMPO EM ROTA`.
-- O mapa agrega pedidos por CD/região e reage aos mesmos filtros do painel. Belém, Macapá e Manaus usam as coordenadas das unidades informadas; Santarém permanece aproximado. Pedidos sem região mapeada são informados abaixo do mapa. A base cartográfica usa Leaflet e o serviço World Street Map da Esri, com atribuição visível.
+- O mapa usa OpenFreeMap, com dados do OpenStreetMap e sem chave de API; a atribuição de OpenStreetMap, OpenMapTiles e OpenFreeMap fica visível no mapa. Essa fonte evita o bloqueio do servidor padrão ao abrir o HTML localmente e permite uso comercial. Alfinetes identificam os CDs de Belém, Macapá e Manaus; o calor mostra a concentração de entregas agrupada pelos limites oficiais dos bairros, sem exibir endereços individuais. Retiradas não entram no calor. O painel enquadra automaticamente os CDs e bairros que aparecem nos filtros.
